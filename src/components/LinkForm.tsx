@@ -1,9 +1,18 @@
-import { Box, BoxProps, Text } from "@chakra-ui/react";
+import {
+  Box,
+  BoxProps,
+  FormControl,
+  FormErrorMessage,
+  Text,
+} from "@chakra-ui/react";
 import React, { FormEventHandler, useState } from "react";
 import { urlForm } from "../models/urlForm";
 import { validateURL } from "../utils/util";
 import { Button } from "./Button";
 import Input from "./Input";
+
+import bgMobile from "../assets/bg-shorten-mobile.svg";
+import bgDesktop from "../assets/bg-shorten-desktop.svg";
 
 type Props = BoxProps & {
   onShorten: (form: urlForm) => void;
@@ -15,9 +24,8 @@ export function LinkForm({ onShorten, ...rest }: Props) {
   const [form, setForm] = useState<urlForm>({ url: "", surname: "" });
 
   function handleChange(id: string, value: string) {
-    if (urlError) {
+    if (urlErrorMessage) {
       setUrlErrorMessage("");
-      setUrlError(false);
     }
     setForm((form) => {
       return { ...form, [id]: value };
@@ -26,59 +34,92 @@ export function LinkForm({ onShorten, ...rest }: Props) {
 
   function handleSubmit(e: any) {
     e.preventDefault();
-    setUrlError(false);
     setUrlErrorMessage("");
     if (!form.url) {
-      setUrlError(true);
       setUrlErrorMessage("Please add a link");
       return;
     }
     if (!validateURL(form.url)) {
-      setUrlError(true);
       setUrlErrorMessage("Invalid Url");
       return;
     }
     onShorten(form);
-    setForm((form) => {
-      return { url: "", surname: "" };
-    });
+    setForm({ url: "", surname: "" });
   }
 
   return (
     <Box
+      display="flex"
+      flexDirection={{
+        base: "column",
+        md: "row",
+      }}
+      alignItems="center"
+      gap={4}
       as="form"
-      bg="blue.900"
-      p={6}
+      bg="purple.900"
+      px={{
+        base: 6,
+        md: 16,
+      }}
+      py={{
+        base: 6,
+        md: 16,
+      }}
       rounded="lg"
       onSubmit={handleSubmit}
+      backgroundImage={{
+        base: bgMobile,
+        md: bgDesktop,
+      }}
+      backgroundRepeat="no-repeat"
+      backgroundPosition={{
+        base: "right top",
+        md: "right bottom",
+      }}
+      backgroundSize={{
+        md: "cover",
+      }}
       {...rest}
     >
-      <Input
-        id="url"
-        value={form.url}
-        onChange={({ target }) => handleChange(target.id, target.value)}
-        placeholder="Shorten a link here..."
-        size="lg"
-        isInvalid={urlError}
-        isRequired={false}
-      />
-      {urlError && (
-        <Text fontSize="sm" color="red.400" mt={1}>
+      <FormControl
+        isInvalid={Boolean(urlErrorMessage)}
+        minW={{
+          md: "80%",
+        }}
+      >
+        <Input
+          id="url"
+          type="url"
+          value={form.url}
+          onChange={({ target }) => handleChange(target.id, target.value)}
+          placeholder="Shorten a link here..."
+          size="lg"
+          isRequired={false}
+          h={16}
+        />
+        <FormErrorMessage
+          position={{
+            base: "relative",
+            md: "absolute",
+          }}
+        >
           {urlErrorMessage}
-        </Text>
-      )}
-
-      <Button w="full" mt={4} type="submit">
-        Shorten It!
-      </Button>
-      <Input
+        </FormErrorMessage>
+      </FormControl>
+      {/* <Input
         id="surname"
         value={form.surname}
         onChange={({ target }) => handleChange(target.id, target.value)}
-        placeholder="Surname (optional)..."
+        placeholder="surname (optional)..."
         size="sm"
-        mt={2}
-      />
+        mt={4}
+        maxLength={20}
+        opacity={0.9}
+      /> */}
+      <Button w="full" type="submit" h={16}>
+        Shorten It!
+      </Button>
     </Box>
   );
 }

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { shortenedLink } from "../models/shortenedLink";
 import { api } from "../services/api";
 import { Button } from "./Button";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 type Props = BoxProps & {
   shortened: shortenedLink;
@@ -10,40 +11,84 @@ type Props = BoxProps & {
 
 export default function ShortenedLink({ shortened, ...props }: Props) {
   const [copied, setCopied] = useState(false);
-  const link = api.getUri() + "/" + shortened.surname;
-
-  function handleCopy(link: string) {
-    navigator.clipboard
-      .writeText(link)
-      .then(() => {
-        setCopied(true);
-      })
-      .catch((err) => {
-        setCopied(false);
-      });
-  }
+  const link = location.host + "/" + shortened.surname;
 
   return (
-    <Stack
+    <Box
       bg="white"
       p={4}
-      alignItems="flex-start"
+      display="flex"
+      alignItems={{
+        md: "center",
+      }}
+      flexDirection={{
+        base: "column",
+        md: "row",
+      }}
+      gap={{
+        md: 8,
+        base: 4,
+      }}
       spacing={2}
       rounded="md"
+      boxShadow="md"
+      maxW="1100px"
+      mx="auto"
       {...props}
     >
-      <Text color="gray.800" fontSize="lg">
-        {shortened.original}
-      </Text>
-      <Divider />
-      <Text color="cyan.400">{link}</Text>
-      <Button
+      <Stack
+        spacing={0}
         w="full"
-        onClick={() => handleCopy(link)}
-        bg={copied ? "cyan.600" : "cyan.400"}
+        flexDirection={{
+          base: "column",
+          md: "row",
+        }}
+        alignItems={{
+          md: "center",
+        }}
+        justifyContent={{
+          md: "space-between",
+        }}
+        px={{ md: 2 }}
+        gap={{
+          base: 2,
+        }}
       >
-        {copied ? "Copied" : "Copy"}
-      </Button>
-    </Stack>
+        <Text
+          color="gray.800"
+          fontSize={{
+            base: "lg",
+            md: "xl",
+          }}
+        >
+          {shortened.original}
+        </Text>
+        <Divider
+          bg="gray.400"
+          display={{
+            md: "none",
+          }}
+        />
+        <Text
+          color="cyan.400"
+          fontSize={{
+            md: "xl",
+          }}
+        >
+          {link}
+        </Text>
+      </Stack>
+      <CopyToClipboard text={link} onCopy={() => setCopied(true)}>
+        <Button
+          w={{
+            base: "full",
+            md: "15%",
+          }}
+          bg={copied ? "cyan.600" : "cyan.400"}
+        >
+          {copied ? "Copied" : "Copy"}
+        </Button>
+      </CopyToClipboard>
+    </Box>
   );
 }

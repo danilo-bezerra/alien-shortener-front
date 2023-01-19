@@ -12,9 +12,10 @@ export function Button({ children, ...rest }: Props) {
       _focus={{
         bg: "cyan.300",
       }}
-      _pressed={{
-        bg: "cyan.400",
+      _hover={{
+        bg: "cyan.300",
       }}
+      cursor="pointer"
       {...rest}
     >
       {children}

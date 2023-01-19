@@ -1,5 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import { useState } from "react";
+import Header from "./components/Header";
 import { LinkForm } from "./components/LinkForm";
 import ShortenedLink from "./components/ShortenedLink";
 import { shortenedLink } from "./models/shortenedLink";
@@ -22,8 +23,10 @@ function App() {
   }
 
   return (
-    <Box bg="gray.200" minHeight="100vh" p={4}>
-      <Box maxW="768px" mx="auto">
+    <Box minHeight="100vh" bg="gray.200">
+      <Header />
+      {/* */}
+      <Box maxW="1440px" mx="auto" p={4}>
         <LinkForm onShorten={onSubmit} mb={4} />
         {shortenedLinks.map((s, i) => (
           <ShortenedLink shortened={s} key={i} mb={4} />

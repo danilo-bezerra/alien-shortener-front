@@ -5,7 +5,7 @@ import { api } from "../services/api";
 
 type Props = {};
 
-export function Redirector({}: Props) {
+export function Redirection({}: Props) {
   const location = useLocation();
 
   useEffect(() => {
@@ -15,7 +15,7 @@ export function Redirector({}: Props) {
       try {
         console.log(pathname);
         const res = await api.get(`/links${pathname}`);
-        window.location = res.data?.original;
+        window.location.replace(res.data?.original);
       } catch (e) {
         console.log("Não encontrado" + e);
       }
